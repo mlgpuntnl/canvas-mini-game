@@ -53,7 +53,7 @@ export function Game(canvas, width, height) {
     }
 
     this.handleInput = () => {
-        for (const action in this.currentInput) {
+        for (let action in this.currentInput) {
             switch (action) {
                 case 'left':
                     this.player.move(-1)
@@ -64,14 +64,20 @@ export function Game(canvas, width, height) {
                     break;
 
                 case 'fire':
-                    console.log('Fire!!');
+                    if (this.currentInput['fire'] == true) {
+                        console.log('fire');
+                        this.player.fire()
+                        this.currentInput['fire'] = false
+                    }
                     break;
             }
         }
     }
 
     this.addInput = (action) => {
-        this.currentInput[action] = true
+        if(this.currentInput[action] != false) {
+            this.currentInput[action] = true
+        }
     }
     this.removeInput = (action) => {
         delete this.currentInput[action]
