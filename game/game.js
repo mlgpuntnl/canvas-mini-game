@@ -1,4 +1,5 @@
 import { Button } from "./ui/button"
+import { Player } from "./objects/player"
 
 export function Game(canvas, width, height) {
     this.canvas = canvas
@@ -8,8 +9,13 @@ export function Game(canvas, width, height) {
     // set black background
     this.ctx.fillStyle = '#000'
     this.ctx.fillRect(0,0,this.width,this.height)
+    this.ctx.imageSmoothingEnabled = false;
 
     this.clickActions = []
+    this.currentInput = {}
+
+    this.fps = 60
+    this.running
 
     this.canvas.addEventListener('click', (e) => {
         this.handleClickEvent(e.offsetX, e.offsetY)
@@ -22,7 +28,13 @@ export function Game(canvas, width, height) {
     }
 
     this.play = () => {
-        alert('play')
+        this.player = new Player(
+            [ this.canvas.width * .5, this.canvas.height * .8 ],
+            [ 100, 100 ],
+            'spaceship.png'
+        )
+        
+        this.running = setInterval(run, (1000 / this.fps))
     }
 
     this.addOnClick = (elem, action) => {
@@ -40,4 +52,36 @@ export function Game(canvas, width, height) {
         })
     }
 
+    this.handleInput = () => {
+        for (const action in this.currentInput) {
+            switch (action) {
+                case 'left':
+                    this.player.move(-1)
+                    break;
+
+                case 'right':
+                    this.player.move(1)
+                    break;
+
+                case 'fire':
+                    console.log('Fire!!');
+                    break;
+            }
+        }
+    }
+    
+    this.removeInput = (action) => {
+        this.keysPressed[action] = true
+    }
+    this.removeInput = (action) => {
+        delete this.keysPressed[action]
+    }
+
+
+    const run = () => {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.handleInput()
+        this.player.update()
+        this.player.draw(this.ctx)
+    }
 }
