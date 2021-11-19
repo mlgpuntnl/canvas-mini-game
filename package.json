@@ -1,0 +1,15 @@
+{
+  "name": "canvas-mini-game",
+  "version": "1.0.0",
+  "description": "A mini game for my website",
+  "main": "index.js",
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build"
+  },
+  "author": "Timo Stevens",
+  "license": "ISC",
+  "devDependencies": {
+    "snowpack": "^3.8.8"
+  }
+}
