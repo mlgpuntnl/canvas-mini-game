@@ -69,12 +69,12 @@ export function Game(canvas, width, height) {
             }
         }
     }
-    
-    this.removeInput = (action) => {
-        this.keysPressed[action] = true
+
+    this.addInput = (action) => {
+        this.currentInput[action] = true
     }
     this.removeInput = (action) => {
-        delete this.keysPressed[action]
+        delete this.currentInput[action]
     }
 
 
