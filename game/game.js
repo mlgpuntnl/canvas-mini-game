@@ -1,7 +1,9 @@
 import { Button } from "./ui/button"
 import { Player } from "./objects/player"
+import { Astroid } from "./objects/astroid"
 
 export function Game(canvas, width, height) {
+    // create canvas
     this.canvas = canvas
     this.canvas.width = width
     this.canvas.height = height
@@ -10,12 +12,16 @@ export function Game(canvas, width, height) {
     this.ctx.fillStyle = '#000'
     this.ctx.fillRect(0,0,this.width,this.height)
     this.ctx.imageSmoothingEnabled = false;
-
+    // input handeling
     this.clickActions = []
     this.currentInput = {}
 
+    // game state
     this.fps = 60
     this.running
+    this.astroids = []
+    this.astroidSpawning
+    this.astroidSpawnRate = 2
 
     this.canvas.addEventListener('click', (e) => {
         this.handleClickEvent(e.offsetX, e.offsetY)
@@ -35,6 +41,7 @@ export function Game(canvas, width, height) {
         )
         
         this.running = setInterval(run, (1000 / this.fps))
+        this.astroidSpawning = setInterval(createAstroid, (1000 * this.astroidSpawnRate))
     }
 
     this.addOnClick = (elem, action) => {
@@ -65,7 +72,6 @@ export function Game(canvas, width, height) {
 
                 case 'fire':
                     if (this.currentInput['fire'] == true) {
-                        console.log('fire');
                         this.player.fire()
                         this.currentInput['fire'] = false
                     }
@@ -83,11 +89,23 @@ export function Game(canvas, width, height) {
         delete this.currentInput[action]
     }
 
+    const createAstroid = () => {
+        this.astroids.push(new Astroid(this.canvas.width))
+    }
+
 
     const run = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.handleInput()
+        // update objects
         this.player.update()
+        this.astroids.forEach(astroid => {
+            astroid.update()
+        })
+        // draw objects
         this.player.draw(this.ctx)
+        this.astroids.forEach(astroid => {
+            astroid.draw(this.ctx)
+        })
     }
 }
