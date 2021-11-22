@@ -2,9 +2,12 @@ import { Object } from "./object";
 import { Bullet } from "./bullet";
 
 export class Player extends Object{
-    constructor(position, size, image) {
-        super(position, size, 5, image)
+    constructor(position, size, image, maxPositionX) {
+        let spd = 6
+        super(position, size, spd, image)
+
         this.bullets = []
+        this.maxPositionX = maxPositionX - size[0]
     }
 
     move(direction) {
@@ -21,9 +24,15 @@ export class Player extends Object{
     }
 
     update() {
+        if (this.position.x <= 0 &&  this.direction.x < 0) {
+            this.direction.x = 0
+        } else if(this.position.x >= this.maxPositionX && this.direction.x > 0) {
+            this.direction.x = 0
+        }
         super.update()
         this.direction.x = 0
 
+        // update bullets
         for (let i in this.bullets) {
             let alive = this.bullets[i].update()
             if (!alive) {

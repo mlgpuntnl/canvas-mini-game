@@ -37,7 +37,8 @@ export function Game(canvas, width, height) {
         this.player = new Player(
             [ this.canvas.width * .5, this.canvas.height * .8 ],
             [ 100, 100 ],
-            'spaceship.png'
+            'spaceship.png',
+            this.canvas.width
         )
         
         this.running = setInterval(run, (1000 / this.fps))
