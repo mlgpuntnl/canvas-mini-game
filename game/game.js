@@ -90,9 +90,23 @@ export function Game(canvas, width, height) {
         delete this.currentInput[action]
     }
 
+    const handleCollision = () => {
+        for (let i in this.astroids) {
+            let bulletIndex = this.player.bullets.findIndex(bullet => bullet.collideWith(this.astroids[i].box))
+            if (bulletIndex != -1) {
+                this.astroids.splice(i, 1)
+                this.player.bullets.splice(bulletIndex, 1)
+                continue
+            }
+            if (this.player.collideWith(this.astroids[i].box)) {
+                this.astroids.splice(i, 1)
+                continue
+            }
+        }
+    }
+
     const createAstroid = () => {
         this.astroids.push(new Astroid(this.canvas.width))
-        console.log(`num astroids: ${this.astroids.length}`);
     }
 
 
@@ -107,6 +121,8 @@ export function Game(canvas, width, height) {
                 this.astroids.splice(i,1)
             }
         }
+        // check for collision
+        handleCollision()
         // draw objects
         this.player.draw(this.ctx)
         this.astroids.forEach(astroid => {
