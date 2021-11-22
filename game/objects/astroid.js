@@ -3,12 +3,13 @@ import { Object } from "./object";
 export class Astroid extends Object {
     constructor(spawnRange) {
         let size = Math.floor(Math.random() * 100) + 50
-        let pos = [ Math.floor(Math.random() * (spawnRange - size/2)) + size/2, - size ]
+        let spawnPadding = 50 + size
+        let pos = [Math.floor(Math.random() * (spawnRange - spawnPadding)) + (spawnPadding/2), - size ]
         let spd = 5
         let img_url = 'astroids/astroid-1.png'
 
         super(pos, [size,size], spd, img_url)
-        
+
         this.direction.x = (Math.floor(Math.random() * 1.2 * 10) / 10) - .6
         this.direction.y = 1 - this.direction.x
         this.rotSpeed = Math.floor(Math.random() * 7) - 3
