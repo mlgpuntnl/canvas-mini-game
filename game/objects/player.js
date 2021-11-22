@@ -36,7 +36,7 @@ export class Player extends Object{
         for (let i in this.bullets) {
             let alive = this.bullets[i].update()
             if (!alive) {
-                delete this.bullets[i]
+                this.bullets.splice(i, 1)
             }
         }
     }

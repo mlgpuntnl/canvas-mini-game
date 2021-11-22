@@ -35,7 +35,7 @@ export function Game(canvas, width, height) {
 
     this.play = () => {
         this.player = new Player(
-            [ this.canvas.width * .5, this.canvas.height * .8 ],
+            [ this.canvas.width * .5, this.canvas.height * .9 ],
             [ 100, 100 ],
             'spaceship.png',
             this.canvas.width
@@ -92,6 +92,7 @@ export function Game(canvas, width, height) {
 
     const createAstroid = () => {
         this.astroids.push(new Astroid(this.canvas.width))
+        console.log(`num astroids: ${this.astroids.length}`);
     }
 
 
@@ -100,9 +101,12 @@ export function Game(canvas, width, height) {
         this.handleInput()
         // update objects
         this.player.update()
-        this.astroids.forEach(astroid => {
-            astroid.update()
-        })
+        for (let i in this.astroids) {
+            this.astroids[i].update()
+            if (this.astroids[i].position.y >= canvas.height) {
+                this.astroids.splice(i,1)
+            }
+        }
         // draw objects
         this.player.draw(this.ctx)
         this.astroids.forEach(astroid => {
