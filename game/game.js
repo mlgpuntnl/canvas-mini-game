@@ -99,19 +99,15 @@ export function Game(canvas, width, height) {
             for (let j in this.player.bullets) {
                 let point = this.player.bullets[j].collideWith(this.astroids[i].box)
                 if (point != false) {
-                    this.astroids.splice(i, 1)
                     this.player.bullets.splice(j, 1)
-                    this.animations.push(new Explosion([point.x, point.y], 1, this.fps))
+                    this.animations.push(new Explosion([point.x, point.y]))
                     collision = true
                 }
             }
-            if (collision) continue
-            // let bulletIndex = this.player.bullets.findIndex(bullet => bullet.collideWith(this.astroids[i].box))
-            // if (bulletIndex != -1) {
-            //     this.astroids.splice(i, 1)
-            //     this.player.bullets.splice(bulletIndex, 1)
-            //     continue
-            // }
+            if (collision) {
+                this.astroids.splice(i, 1)
+                continue
+            }
             if (this.player.collideWith(this.astroids[i].box)) {
                 this.astroids.splice(i, 1)
                 continue
