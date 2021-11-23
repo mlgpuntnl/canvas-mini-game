@@ -1,6 +1,7 @@
 import { Button } from "./ui/button"
 import { Player } from "./objects/player"
 import { Astroid } from "./objects/astroid"
+import { Explosion } from "./animations/explosion"
 
 export function Game(canvas, width, height) {
     // create canvas
@@ -19,6 +20,7 @@ export function Game(canvas, width, height) {
     // game state
     this.fps = 60
     this.running
+    this.animations = []
     this.astroids = []
     this.astroidSpawning
     this.astroidSpawnRate = 2
@@ -57,6 +59,7 @@ export function Game(canvas, width, height) {
             if (object.elem.isClicked(x,y)) {
                 object.action()
             }
+                // this.animations.push(new Explosion([x,y], 1, this.fps))
         })
     }
 
@@ -92,12 +95,23 @@ export function Game(canvas, width, height) {
 
     const handleCollision = () => {
         for (let i in this.astroids) {
-            let bulletIndex = this.player.bullets.findIndex(bullet => bullet.collideWith(this.astroids[i].box))
-            if (bulletIndex != -1) {
-                this.astroids.splice(i, 1)
-                this.player.bullets.splice(bulletIndex, 1)
-                continue
+            let collision = false
+            for (let j in this.player.bullets) {
+                let point = this.player.bullets[j].collideWith(this.astroids[i].box)
+                if (point != false) {
+                    this.astroids.splice(i, 1)
+                    this.player.bullets.splice(j, 1)
+                    this.animations.push(new Explosion([point.x, point.y], 1, this.fps))
+                    collision = true
+                }
             }
+            if (collision) continue
+            // let bulletIndex = this.player.bullets.findIndex(bullet => bullet.collideWith(this.astroids[i].box))
+            // if (bulletIndex != -1) {
+            //     this.astroids.splice(i, 1)
+            //     this.player.bullets.splice(bulletIndex, 1)
+            //     continue
+            // }
             if (this.player.collideWith(this.astroids[i].box)) {
                 this.astroids.splice(i, 1)
                 continue
@@ -121,12 +135,20 @@ export function Game(canvas, width, height) {
                 this.astroids.splice(i,1)
             }
         }
+        for (let i in this.animations) {
+            if(!this.animations[i].update()) {
+                this.animations.splice(i,1)
+            }
+        }
         // check for collision
         handleCollision()
         // draw objects
         this.player.draw(this.ctx)
         this.astroids.forEach(astroid => {
             astroid.draw(this.ctx)
+        })
+        this.animations.forEach(animation => {
+            animation.draw(this.ctx)
         })
     }
 }

@@ -65,7 +65,7 @@ export class Object {
                 this.box[i].y > box.tl.y && 
                 this.box[i].y < box.bl.y
             ) {
-                return true
+                return this.box[i]
             }
         }
         return false
