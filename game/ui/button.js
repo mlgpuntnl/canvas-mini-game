@@ -1,16 +1,19 @@
 
 
-export function Button(position, width, height, text) {
-    this.position = {
-        x: (position[0] - (width / 2)),
-        y: (position[1] - (height / 2))
+export class Button {
+    constructor(position, width, height, text) {
+        this.position = {
+            x: (position[0] - (width / 2)),
+            y: (position[1] - (height / 2))
+        }
+        this.width = width
+        this.height = height
+        this.text = text
+        this.borderRadius = 30
     }
-    this.width = width
-    this.height = height
-    this.text = text
-    this.borderRadius = 30
 
-    this.draw = (ctx) => {
+
+    draw(ctx) {
         ctx.beginPath();
         ctx.moveTo(this.position.x + this.borderRadius, this.position.y);
         ctx.lineTo(this.position.x + this.width - this.borderRadius, this.position.y);
@@ -51,7 +54,7 @@ export function Button(position, width, height, text) {
         ctx.fillText(this.text, this.position.x + (this.width / 2), this.position.y + (this.height / 1.5), this.width);
     }
 
-    this.isClicked = (x,y) => {
+    isClicked (x,y) {
         return (
             x > this.position.x &&
             x < this.position.x + this.width &&
