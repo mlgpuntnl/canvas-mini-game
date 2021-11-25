@@ -2,6 +2,7 @@ import { Button } from "./ui/button"
 import { Player } from "./objects/player"
 import { Astroid } from "./objects/astroid"
 import { Explosion } from "./animations/explosion"
+import { Hearts } from "./ui/hearts"
 
 export function Game(canvas, width, height) {
     // create canvas
@@ -42,6 +43,7 @@ export function Game(canvas, width, height) {
             'spaceship.png',
             this.canvas.width
         )
+        this.hearts = new Hearts([790,10],[75,75])
         
         this.running = setInterval(run, (1000 / this.fps))
         this.astroidSpawning = setInterval(createAstroid, (1000 * this.astroidSpawnRate))
@@ -110,18 +112,31 @@ export function Game(canvas, width, height) {
             }
             if (this.player.collideWith(this.astroids[i].box)) {
                 this.astroids.splice(i, 1)
+                this.player.hp--
                 continue
             }
         }
     }
 
     const createAstroid = () => {
-        this.astroids.push(new Astroid(this.canvas.width))
+        if (this.running) {
+            this.astroids.push(new Astroid(this.canvas.width))
+        } else {
+            clearInterval(this.astroidSpawning)
+        }
+    }
+
+    const drawUI = () => {
+        this.hearts.draw(this.ctx, this.player.hp)
     }
 
 
     const run = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.player.hp <= 0) {
+            clearInterval(this.running)
+            this.running = false
+        }
         this.handleInput()
         // update objects
         this.player.update()
@@ -129,6 +144,7 @@ export function Game(canvas, width, height) {
             this.astroids[i].update()
             if (this.astroids[i].position.y >= canvas.height) {
                 this.astroids.splice(i,1)
+                this.player.hp--
             }
         }
         for (let i in this.animations) {
@@ -146,5 +162,6 @@ export function Game(canvas, width, height) {
         this.animations.forEach(animation => {
             animation.draw(this.ctx)
         })
+        drawUI()
     }
 }

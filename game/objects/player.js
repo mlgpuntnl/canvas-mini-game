@@ -4,8 +4,10 @@ import { Bullet } from "./bullet";
 export class Player extends Object{
     constructor(position, size, image, maxPositionX) {
         let spd = 6
+
         super(position, size, spd, image)
 
+        this.hp = 6
         this.bullets = []
         this.maxPositionX = maxPositionX - size[0]
     }
