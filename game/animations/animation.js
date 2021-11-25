@@ -12,7 +12,6 @@ export class Animation
 
     update() {
         if (this.frames <= 0) {
-            console.log('animation end');
             return false
         }
 

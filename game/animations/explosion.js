@@ -18,7 +18,6 @@ export class Explosion extends Animation
 
         for (let i = 0; i < num_particles; i++) {
             let rotation = angle * i     
-            console.log(rotation);
             this.particles.push(
                 new Particle(
                     [this.origin.x, this.origin.y],
