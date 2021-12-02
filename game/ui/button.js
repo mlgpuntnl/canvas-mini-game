@@ -48,13 +48,13 @@ export class Button {
         ctx.strokeStyle = '#fff'
         ctx.stroke();
 
-        ctx.font = (this.height * .5)+'px monospace';
+        ctx.font = (this.height * .5) + 'px monospace';
         ctx.fillStyle = '#fff'
         ctx.textAlign = 'center'
         ctx.fillText(this.text, this.position.x + (this.width / 2), this.position.y + (this.height / 1.5), this.width);
     }
 
-    isClicked (x,y) {
+    isClicked(x, y) {
         return (
             x > this.position.x &&
             x < this.position.x + this.width &&

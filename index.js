@@ -1,10 +1,10 @@
 import { Game } from "./game/game";
 
 const canvas = document.getElementById('mini-game')
-const width = 800
-const height = 800
+// const width = 800
+// const height = 800
 
-const game = new Game(canvas, width, height)
+const game = new Game(canvas)
 
 game.startScreen()
 
@@ -14,7 +14,7 @@ document.addEventListener('keydown', function (e) {
         case 'ArrowLeft':
             game.addInput('left')
             break;
-    
+
         case 'ArrowRight':
             game.addInput('right')
             break;

@@ -15,7 +15,7 @@ export class Object {
         }
         this.speed = speed
 
-        if(image) {
+        if (image) {
             // image data
             this.image_url = `/game/assets/${image}`
             this.image = new Image()
@@ -60,9 +60,9 @@ export class Object {
     collideWith(box) {
         for (let i in this.box) {
             if (
-                this.box[i].x > box.tl.x && 
-                this.box[i].x < box.tr.x && 
-                this.box[i].y > box.tl.y && 
+                this.box[i].x > box.tl.x &&
+                this.box[i].x < box.tr.x &&
+                this.box[i].y > box.tl.y &&
                 this.box[i].y < box.bl.y
             ) {
                 return this.box[i]

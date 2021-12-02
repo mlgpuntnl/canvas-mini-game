@@ -4,15 +4,15 @@ import { Astroid } from "./objects/astroid"
 import { Explosion } from "./animations/explosion"
 import { Hearts } from "./ui/hearts"
 
-export function Game(canvas, width, height) {
+export function Game(canvas) {
     // create canvas
     this.canvas = canvas
-    this.canvas.width = width
-    this.canvas.height = height
+    this.canvas.width = canvas.offsetWidth
+    this.canvas.height = canvas.clientHeight
     this.ctx = this.canvas.getContext('2d')
     // set black background
     this.ctx.fillStyle = '#000'
-    this.ctx.fillRect(0,0,this.width,this.height)
+    this.ctx.fillRect(0, 0, this.width, this.height)
     this.ctx.imageSmoothingEnabled = false;
     // input handeling
     this.clickActions = []
@@ -31,20 +31,24 @@ export function Game(canvas, width, height) {
     })
 
     this.startScreen = () => {
-        let btn = new Button([400,400],200,75,'Start')
+        let btn = new Button(
+            [this.canvas.width / 2, this.canvas.height / 2],
+            200,
+            75,
+            'Start')
         btn.draw(this.ctx)
         this.addOnClick(btn, this.play)
     }
 
     this.play = () => {
         this.player = new Player(
-            [ this.canvas.width * .5, this.canvas.height * .9 ],
-            [ 100, 100 ],
-            'spaceship.png',
+            [this.canvas.width * .5, this.canvas.height * .9],
+            [100, 100],
+            'Spaceship.png',
             this.canvas.width
         )
-        this.hearts = new Hearts([790,10],[75,75])
-        
+        this.hearts = new Hearts([this.canvas.width - 10, 10], [75, 75])
+
         this.running = setInterval(run, (1000 / this.fps))
         this.astroidSpawning = setInterval(createAstroid, (1000 * this.astroidSpawnRate))
     }
@@ -56,12 +60,12 @@ export function Game(canvas, width, height) {
         })
     }
 
-    this.handleClickEvent = (x,y) => {
+    this.handleClickEvent = (x, y) => {
         this.clickActions.forEach((object) => {
-            if (object.elem.isClicked(x,y)) {
+            if (object.elem.isClicked(x, y)) {
                 object.action()
             }
-                // this.animations.push(new Explosion([x,y], 1, this.fps))
+            // this.animations.push(new Explosion([x,y], 1, this.fps))
         })
     }
 
@@ -87,7 +91,7 @@ export function Game(canvas, width, height) {
     }
 
     this.addInput = (action) => {
-        if(this.currentInput[action] != false) {
+        if (this.currentInput[action] != false) {
             this.currentInput[action] = true
         }
     }
@@ -143,13 +147,13 @@ export function Game(canvas, width, height) {
         for (let i in this.astroids) {
             this.astroids[i].update()
             if (this.astroids[i].position.y >= canvas.height) {
-                this.astroids.splice(i,1)
+                this.astroids.splice(i, 1)
                 this.player.hp--
             }
         }
         for (let i in this.animations) {
-            if(!this.animations[i].update()) {
-                this.animations.splice(i,1)
+            if (!this.animations[i].update()) {
+                this.animations.splice(i, 1)
             }
         }
         // check for collision
