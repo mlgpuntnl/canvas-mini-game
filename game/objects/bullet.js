@@ -1,8 +1,8 @@
 import { Object } from "./object";
 
 export class Bullet extends Object {
-    constructor(position) {
-        super(position, [(100 / 8), 40], 10, false)
+    constructor(position, size) {
+        super(position, [size, size * 4], 10, false)
         this.direction.y = -1
         this.alive = true
     }
@@ -10,7 +10,7 @@ export class Bullet extends Object {
     update() {
         super.update()
 
-        if(this.position.y + this.size.height < 0) {
+        if (this.position.y + this.size.height < 0) {
             this.alive = false
         }
 

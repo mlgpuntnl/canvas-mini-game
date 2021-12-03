@@ -10,6 +10,7 @@ export function Game(canvas) {
     this.canvas.width = canvas.offsetWidth
     this.canvas.height = canvas.clientHeight
     this.ctx = this.canvas.getContext('2d')
+    this.scaleMod = canvas.offsetWidth / 800
     // set black background
     this.ctx.fillStyle = '#000'
     this.ctx.fillRect(0, 0, this.width, this.height)
@@ -21,8 +22,8 @@ export function Game(canvas) {
     // game state
     this.fps = 60
     this.running
-    this.animations = []
     this.astroids = []
+    this.animations = []
     this.astroidSpawning
     this.astroidSpawnRate = 2
 
@@ -33,8 +34,8 @@ export function Game(canvas) {
     this.startScreen = () => {
         let btn = new Button(
             [this.canvas.width / 2, this.canvas.height / 2],
-            200,
-            75,
+            200 * this.scaleMod,
+            75 * this.scaleMod,
             'Start')
         btn.draw(this.ctx)
         this.addOnClick(btn, this.play)
@@ -43,11 +44,11 @@ export function Game(canvas) {
     this.play = () => {
         this.player = new Player(
             [this.canvas.width * .5, this.canvas.height * .9],
-            [100, 100],
+            [100 * this.scaleMod, 100 * this.scaleMod],
             'Spaceship.png',
             this.canvas.width
         )
-        this.hearts = new Hearts([this.canvas.width - 10, 10], [75, 75])
+        this.hearts = new Hearts([this.canvas.width - 10, 10], [90 * this.scaleMod, 90 * this.scaleMod])
 
         this.running = setInterval(run, (1000 / this.fps))
         this.astroidSpawning = setInterval(createAstroid, (1000 * this.astroidSpawnRate))
@@ -106,7 +107,7 @@ export function Game(canvas) {
                 let point = this.player.bullets[j].collideWith(this.astroids[i].box)
                 if (point != false) {
                     this.player.bullets.splice(j, 1)
-                    this.animations.push(new Explosion([point.x, point.y]))
+                    this.animations.push(new Explosion([point.x, point.y], this.scaleMod))
                     collision = true
                 }
             }
@@ -124,7 +125,7 @@ export function Game(canvas) {
 
     const createAstroid = () => {
         if (this.running) {
-            this.astroids.push(new Astroid(this.canvas.width))
+            this.astroids.push(new Astroid(this.canvas.width, 125 * this.scaleMod))
         } else {
             clearInterval(this.astroidSpawning)
         }

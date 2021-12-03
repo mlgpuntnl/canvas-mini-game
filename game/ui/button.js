@@ -9,7 +9,7 @@ export class Button {
         this.width = width
         this.height = height
         this.text = text
-        this.borderRadius = 30
+        this.borderRadius = height / 2
     }
 
 

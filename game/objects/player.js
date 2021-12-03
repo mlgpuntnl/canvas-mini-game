@@ -1,7 +1,7 @@
 import { Object } from "./object";
 import { Bullet } from "./bullet";
 
-export class Player extends Object{
+export class Player extends Object {
     constructor(position, size, image, maxPositionX) {
         let spd = 6
 
@@ -19,16 +19,16 @@ export class Player extends Object{
     fire() {
         this.bullets.push(
             new Bullet([
-                this.position.x + (this.size.width / 2), 
+                this.position.x + (this.size.width / 2),
                 this.position.y
-            ])
+            ], this.size.width / 8)
         )
     }
 
     update() {
-        if (this.position.x <= 0 &&  this.direction.x < 0) {
+        if (this.position.x <= 0 && this.direction.x < 0) {
             this.direction.x = 0
-        } else if(this.position.x >= this.maxPositionX && this.direction.x > 0) {
+        } else if (this.position.x >= this.maxPositionX && this.direction.x > 0) {
             this.direction.x = 0
         }
         super.update()
