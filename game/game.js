@@ -35,6 +35,12 @@ export function Game(canvas) {
         this.handleClickEvent(e.offsetX, e.offsetY)
     })
 
+    window.addEventListener('blur', () => {
+        if (this.running) {
+            gameOver()
+        }
+    });
+
     this.startScreen = () => {
         let btn = new Button(
             [this.canvas.width / 2, this.canvas.height / 2],
@@ -42,7 +48,7 @@ export function Game(canvas) {
             75 * this.scaleMod,
             'Start')
         btn.draw(this.ctx)
-        this.addOnClick(btn, this.play)
+        this.addOnClick(btn, this.play, true)
     }
 
     this.play = () => {
@@ -54,6 +60,9 @@ export function Game(canvas) {
         )
         this.highScore = parseInt(Cookie.getCookie('highscore'))
         if (!this.highScore) this.highScore = 0
+        this.score = 0
+        this.astroids = []
+        this.animations = []
 
         this.hearts = new Hearts([this.canvas.width - 10, 10], [90 * this.scaleMod, 90 * this.scaleMod])
         this.scoreText = new Text([15, (100 * this.scaleMod) + 10], 45 * this.scaleMod, this.score)
@@ -63,19 +72,28 @@ export function Game(canvas) {
         this.astroidSpawning = setInterval(createAstroid, (1000 * this.astroidSpawnRate))
     }
 
-    this.addOnClick = (elem, action) => {
+    this.addOnClick = (elem, action, once = false) => {
         this.clickActions.push({
             elem: elem,
-            action: action
+            action: action,
+            once: once
         })
     }
 
     this.handleClickEvent = (x, y) => {
-        this.clickActions.forEach((object) => {
-            if (object.elem.isClicked(x, y)) {
-                object.action()
+        for (let i in this.clickActions) {
+            if (this.clickActions[i].elem.isClicked(x, y)) {
+                this.clickActions[i].action()
+                if (this.clickActions[i].once) {
+                    this.clickActions.splice(i, 1)
+                }
             }
-        })
+        }
+        // this.clickActions.forEach((object) => {
+        //     if (object.elem.isClicked(x, y)) {
+        //         object.action()
+        //     }
+        // })
     }
 
     this.handleInput = () => {
@@ -147,9 +165,10 @@ export function Game(canvas) {
     }
 
     const run = () => {
+        let game_over = false
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.player.hp <= 0) {
-            gameOver()
+            game_over = true
         }
         this.handleInput()
         // update objects
@@ -177,14 +196,35 @@ export function Game(canvas) {
             animation.draw(this.ctx)
         })
         drawUI()
+        if (game_over) {
+            gameOver()
+        }
     }
 
     const gameOver = () => {
+        // clear timed intervalls
         clearInterval(this.running)
         this.running = false
+
         if (this.score > this.highScore) {
             // set highscore
             Cookie.setCookie('highscore', this.score)
         }
+        this.ctx.fillStyle = '#000'
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        let gameOver = new Text(
+            [this.canvas.width / 2, this.canvas.height / 3],
+            100 * this.scaleMod,
+            'Game over',
+            'center'
+        )
+        gameOver.draw(this.ctx)
+        let btn = new Button(
+            [this.canvas.width / 2, this.canvas.height / 2],
+            300 * this.scaleMod,
+            75 * this.scaleMod,
+            'Play again')
+        btn.draw(this.ctx)
+        this.addOnClick(btn, this.play, true)
     }
 }
