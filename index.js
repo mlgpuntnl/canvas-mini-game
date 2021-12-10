@@ -24,7 +24,7 @@ document.addEventListener('keydown', function (e) {
             break;
     }
 });
-addEventListener('keyup', function (e) {
+document.addEventListener('keyup', function (e) {
     switch (e.code) {
         case 'ArrowLeft':
             game.removeInput('left')
