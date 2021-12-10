@@ -3,6 +3,8 @@ import { Player } from "./objects/player"
 import { Astroid } from "./objects/astroid"
 import { Explosion } from "./animations/explosion"
 import { Hearts } from "./ui/hearts"
+import { Text } from "./ui/text"
+import { Cookie } from "./utility/cookie"
 
 export function Game(canvas) {
     // create canvas
@@ -22,6 +24,8 @@ export function Game(canvas) {
     // game state
     this.fps = 60
     this.running
+    this.score = 0
+    this.highScore = 0
     this.astroids = []
     this.animations = []
     this.astroidSpawning
@@ -48,7 +52,12 @@ export function Game(canvas) {
             'Spaceship.png',
             this.canvas.width
         )
+        this.highScore = parseInt(Cookie.getCookie('highscore'))
+        if (!this.highScore) this.highScore = 0
+
         this.hearts = new Hearts([this.canvas.width - 10, 10], [90 * this.scaleMod, 90 * this.scaleMod])
+        this.scoreText = new Text([15, (100 * this.scaleMod) + 10], 45 * this.scaleMod, this.score)
+        this.highScoreText = new Text([15, (40 * this.scaleMod) + 10], 45 * this.scaleMod)
 
         this.running = setInterval(run, (1000 / this.fps))
         this.astroidSpawning = setInterval(createAstroid, (1000 * this.astroidSpawnRate))
@@ -66,7 +75,6 @@ export function Game(canvas) {
             if (object.elem.isClicked(x, y)) {
                 object.action()
             }
-            // this.animations.push(new Explosion([x,y], 1, this.fps))
         })
     }
 
@@ -113,6 +121,7 @@ export function Game(canvas) {
             }
             if (collision) {
                 this.astroids.splice(i, 1)
+                this.score++
                 continue
             }
             if (this.player.collideWith(this.astroids[i].box)) {
@@ -133,14 +142,14 @@ export function Game(canvas) {
 
     const drawUI = () => {
         this.hearts.draw(this.ctx, this.player.hp)
+        this.highScoreText.draw(this.ctx, `Highscore:${this.highScore}`)
+        this.scoreText.draw(this.ctx, `Score:${this.score}`)
     }
-
 
     const run = () => {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.player.hp <= 0) {
-            clearInterval(this.running)
-            this.running = false
+            gameOver()
         }
         this.handleInput()
         // update objects
@@ -168,5 +177,14 @@ export function Game(canvas) {
             animation.draw(this.ctx)
         })
         drawUI()
+    }
+
+    const gameOver = () => {
+        clearInterval(this.running)
+        this.running = false
+        if (this.score > this.highScore) {
+            // set highscore
+            Cookie.setCookie('highscore', this.score)
+        }
     }
 }
